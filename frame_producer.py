@@ -12,7 +12,7 @@ TEMP_FRAME_PATH = "temp_frame.jpg"
 
 VIOLATION_CLASSES = {"NO-Safety Helmet", "NO-Safety Vest"}
 GAP_TOLERANCE = 8.0       # segundos sem detecção até considerar o incidente encerrado
-HEARTBEAT_INTERVAL = 5.0  # 10 minutos, em segundos
+HEARTBEAT_INTERVAL = 600.0  # 10 minutos, em segundos
 
 
 def open_incident(timestamp):
