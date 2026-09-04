@@ -12,7 +12,7 @@ TEMP_FRAME_PATH = "temp_frame.jpg"
 
 VIOLATION_CLASSES = {"NO-Safety Helmet", "NO-Safety Vest"}
 GAP_TOLERANCE = 8.0       # segundos sem detecção até considerar o incidente encerrado
-HEARTBEAT_INTERVAL = 600.0  # 10 minutos, em segundos
+HEARTBEAT_INTERVAL = 5.0  # 10 minutos, em segundos
 
 
 def open_incident(timestamp):
@@ -62,7 +62,7 @@ def send_event(incident, status, current_time):
     payload = build_payload(incident, status, current_time)
     try:
         requests.post(N8N_WEBHOOK_URL, json=payload, timeout=5)
-        classes_str = [c["class"] for c in payload["classes"]]
+        classes_str = list(payload["classes"].keys())
         print(f"[{status.upper()}] {incident['incident_id'][:8]} | {payload['duration']}s | {classes_str}")
     except requests.RequestException as e:
         print(f"Erro ao enviar evento pro n8n: {e}")
