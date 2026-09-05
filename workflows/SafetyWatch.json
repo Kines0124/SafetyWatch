@@ -14,8 +14,54 @@
         -352
       ],
       "id": "1c8ff8f2-a4e4-4e31-946b-18b852ecfedb",
-      "name": "Webhook",
+      "name": "Receber Evento de Incidente",
       "webhookId": "d93d6c74-0098-4663-84b4-69f74d52226a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst body = input.body;\n\nconst classesSummary = Object.entries(body.classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    incident_id: body.incident_id,\n    status: body.status,\n    start_time: body.start_time,\n    end_time: body.end_time,\n    duration: body.duration,\n    classes: body.classes,\n    classes_summary: classesSummary\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -352
+      ],
+      "id": "f567a9fb-0b2d-43ce-8334-bcfaf227550d",
+      "name": "Normalizar Payload"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6dec9b53-6581-4dc4-b66c-bc55a635881f",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "new",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        -352
+      ],
+      "id": "9662306b-d716-413b-a4f0-eaac2d95d1ea",
+      "name": "Incidente Novo?"
     },
     {
       "parameters": {
@@ -131,7 +177,7 @@
         -512
       ],
       "id": "56b5d68d-f85c-4893-9904-50aa89d3da5c",
-      "name": "Insert rows in a table",
+      "name": "Criar Incidente",
       "credentials": {
         "postgres": {
           "id": "aN39y6n3147FG4YT",
@@ -256,7 +302,7 @@
         -192
       ],
       "id": "92bac311-2383-45e0-8bd0-9c6b37ab823e",
-      "name": "Update rows in a table",
+      "name": "Atualizar Incidente",
       "credentials": {
         "postgres": {
           "id": "aN39y6n3147FG4YT",
@@ -295,40 +341,20 @@
         -192
       ],
       "id": "a85e54fa-4cbf-4584-b2f7-4e1f8f9514bc",
-      "name": "IF Min Alert Duration"
+      "name": "Duração Suficiente para Notificar?"
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "6dec9b53-6581-4dc4-b66c-bc55a635881f",
-              "leftValue": "={{ $json.status }}",
-              "rightValue": "new",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
+        "jsCode": "const input = $input.first().json;\nconst classes = input.classes;\n\nconst classesSummary = Object.entries(classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    ...input,\n    classes_summary: classesSummary\n  }\n}];"
       },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        64,
-        -352
+        704,
+        -304
       ],
-      "id": "9662306b-d716-413b-a4f0-eaac2d95d1ea",
-      "name": "IF chunck save"
+      "id": "d21ee65b-bd54-4f46-940b-4729745f2a4e",
+      "name": "Monta Resumo das Classes"
     },
     {
       "parameters": {
@@ -357,7 +383,7 @@
         -304
       ],
       "id": "80b6891e-5827-43da-9418-5d896a5eab2c",
-      "name": "HTTP Request",
+      "name": "Gerar Relatorio com LLM",
       "credentials": {
         "httpHeaderAuth": {
           "id": "ZAtHUFri7ihZCXud",
@@ -381,7 +407,7 @@
         -304
       ],
       "id": "59cb3db2-3c91-4aee-a2dc-e4318036cb74",
-      "name": "Send an Email",
+      "name": "Enviar Email de Notificação",
       "webhookId": "7276f5cd-5f81-43fb-94bc-90bfefe4a0ba",
       "credentials": {
         "smtp": {
@@ -389,114 +415,88 @@
           "name": "SMTP account"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst body = input.body;\n\nconst classesSummary = Object.entries(body.classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    incident_id: body.incident_id,\n    status: body.status,\n    start_time: body.start_time,\n    end_time: body.end_time,\n    duration: body.duration,\n    classes: body.classes,\n    classes_summary: classesSummary\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -160,
-        -352
-      ],
-      "id": "f567a9fb-0b2d-43ce-8334-bcfaf227550d",
-      "name": "Filtro"
-    },
-    {
-      "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst classes = input.classes;\n\nconst classesSummary = Object.entries(classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    ...input,\n    classes_summary: classesSummary\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        704,
-        -304
-      ],
-      "id": "d21ee65b-bd54-4f46-940b-4729745f2a4e",
-      "name": "Filtro2"
     }
   ],
   "pinData": {},
   "connections": {
-    "Webhook": {
+    "Receber Evento de Incidente": {
       "main": [
         [
           {
-            "node": "Filtro",
+            "node": "Normalizar Payload",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Update rows in a table": {
+    "Normalizar Payload": {
       "main": [
         [
           {
-            "node": "IF Min Alert Duration",
+            "node": "Incidente Novo?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF chunck save": {
+    "Incidente Novo?": {
       "main": [
         [
           {
-            "node": "Insert rows in a table",
+            "node": "Criar Incidente",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Update rows in a table",
+            "node": "Atualizar Incidente",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF Min Alert Duration": {
+    "Atualizar Incidente": {
       "main": [
         [
           {
-            "node": "Filtro2",
+            "node": "Duração Suficiente para Notificar?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request": {
+    "Duração Suficiente para Notificar?": {
       "main": [
         [
           {
-            "node": "Send an Email",
+            "node": "Monta Resumo das Classes",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filtro": {
+    "Monta Resumo das Classes": {
       "main": [
         [
           {
-            "node": "IF chunck save",
+            "node": "Gerar Relatorio com LLM",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filtro2": {
+    "Gerar Relatorio com LLM": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Enviar Email de Notificação",
             "type": "main",
             "index": 0
           }
@@ -513,7 +513,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "2a05b9e0-1c99-4736-94f7-002345cc2e37",
+  "versionId": "bf6b7a89-bb4d-4b5b-bf4d-02cfaf440f41",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "c36b04385d9bd34d20105230762378c0f3f4eaee534114d4cf328d4866f88a29"
