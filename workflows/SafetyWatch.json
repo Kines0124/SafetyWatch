@@ -1,0 +1,524 @@
+{
+  "name": "SafetyWatch",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "deteccao-epi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -368,
+        -352
+      ],
+      "id": "1c8ff8f2-a4e4-4e31-946b-18b852ecfedb",
+      "name": "Webhook",
+      "webhookId": "d93d6c74-0098-4663-84b4-69f74d52226a"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "incidents",
+          "mode": "list",
+          "cachedResultName": "incidents"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "incident_id": "={{ $json.incident_id }}",
+            "status": "={{ $json.status }}",
+            "start_time": "={{ $json.start_time }}",
+            "end_time": "={{ $json.end_time }}",
+            "duration": "={{ $json.duration }}",
+            "classes": "={{ $json.classes }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_time",
+              "displayName": "start_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "end_time",
+              "displayName": "end_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "classes",
+              "displayName": "classes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        304,
+        -512
+      ],
+      "id": "56b5d68d-f85c-4893-9904-50aa89d3da5c",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "aN39y6n3147FG4YT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "incidents",
+          "mode": "list",
+          "cachedResultName": "incidents"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "duration": "={{ $json.duration }}",
+            "status": "={{ $json.status }}",
+            "classes": "={{ $json.classes }}",
+            "end_time": "={{ $json.end_time }}",
+            "incident_id": "={{ $json.incident_id }}"
+          },
+          "matchingColumns": [
+            "incident_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "start_time",
+              "displayName": "start_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "end_time",
+              "displayName": "end_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "classes",
+              "displayName": "classes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        304,
+        -192
+      ],
+      "id": "92bac311-2383-45e0-8bd0-9c6b37ab823e",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "aN39y6n3147FG4YT",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b1464c15-4eb8-4bcb-8d78-065de86d0b9a",
+              "leftValue": "={{ Number($json.duration) }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        528,
+        -192
+      ],
+      "id": "a85e54fa-4cbf-4584-b2f7-4e1f8f9514bc",
+      "name": "IF Min Alert Duration"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6dec9b53-6581-4dc4-b66c-bc55a635881f",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "new",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        -352
+      ],
+      "id": "9662306b-d716-413b-a4f0-eaac2d95d1ea",
+      "name": "IF chunck save"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openrouter/free\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é um assistente de segurança do trabalho. Gere relatórios curtos e objetivos sobre incidentes de EPI (Equipamento de Proteção Individual) detectados por um sistema automatizado de visão computacional. Seja direto, sem floreios, em português. Use apenas os dados fornecidos pelo usuário. Se alguma informação não estiver disponível, não invente valores - apenas omita.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Gere um relatório curto sobre este incidente:\\n\\nStatus: {{ $json.status }}\\nDuração: {{ $json.duration }} segundos\\nViolações detectadas: {{ $json.classes_summary }}\\n\\nMencione a duração, o tipo de violação, o número máximo de pessoas detectadas simultaneamente, e se o status for 'ongoing', deixe claro que a situação ainda está em andamento. Se o status for 'closed', informe que a situação foi encerrada.\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        976,
+        -304
+      ],
+      "id": "80b6891e-5827-43da-9418-5d896a5eab2c",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZAtHUFri7ihZCXud",
+          "name": "OpenRouter Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "kines0124@gmail.com",
+        "toEmail": "kines0124@gmail.com",
+        "subject": "={{ $json.status === \"ongoing\" ? \"[SafetyWatch] Violação em andamento\" : \"[SafetyWatch] Incidente encerrado\" }}",
+        "emailFormat": "text",
+        "text": "={{ $json.choices[0].message.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        -304
+      ],
+      "id": "59cb3db2-3c91-4aee-a2dc-e4318036cb74",
+      "name": "Send an Email",
+      "webhookId": "7276f5cd-5f81-43fb-94bc-90bfefe4a0ba",
+      "credentials": {
+        "smtp": {
+          "id": "NsyBPgj46HQgSQtS",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst body = input.body;\n\nconst classesSummary = Object.entries(body.classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    incident_id: body.incident_id,\n    status: body.status,\n    start_time: body.start_time,\n    end_time: body.end_time,\n    duration: body.duration,\n    classes: body.classes,\n    classes_summary: classesSummary\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -352
+      ],
+      "id": "f567a9fb-0b2d-43ce-8334-bcfaf227550d",
+      "name": "Filtro"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst classes = input.classes;\n\nconst classesSummary = Object.entries(classes)\n  .map(([cls, info]) => `${cls} (confiança máxima: ${info.max_confidence}, pessoas simultâneas: ${info.max_concurrent})`)\n  .join(\"; \");\n\nreturn [{\n  json: {\n    ...input,\n    classes_summary: classesSummary\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -304
+      ],
+      "id": "d21ee65b-bd54-4f46-940b-4729745f2a4e",
+      "name": "Filtro2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filtro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "IF Min Alert Duration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF chunck save": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Min Alert Duration": {
+      "main": [
+        [
+          {
+            "node": "Filtro2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro": {
+      "main": [
+        [
+          {
+            "node": "IF chunck save",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "2a05b9e0-1c99-4736-94f7-002345cc2e37",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c36b04385d9bd34d20105230762378c0f3f4eaee534114d4cf328d4866f88a29"
+  },
+  "nodeGroups": [],
+  "id": "wZbA8PcgcV5hg7YO",
+  "tags": []
+}
