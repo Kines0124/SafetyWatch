@@ -19,6 +19,17 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  n8n-import:
+    image: n8nio/n8n:latest
+    container_name: safetywatch-n8n-import
+    entrypoint: /bin/sh
+    command: -c "n8n import:workflow --input=/workflows/SafetyWatch.json"
+    volumes:
+      - ./workflows:/workflows
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+
   n8n:
     image: n8nio/n8n:latest
     container_name: safetywatch-n8n
@@ -30,8 +41,12 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
     depends_on:
-      - postgres
-      - detectepi
+      n8n-import:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_started
+      detectepi:
+        condition: service_started
     restart: unless-stopped
 
 volumes:
